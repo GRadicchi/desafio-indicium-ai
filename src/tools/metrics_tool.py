@@ -5,7 +5,7 @@ from typing import Dict, Any
 from datetime import datetime, timedelta
 
 # Importando a conexão com o banco
-from database.client import get_db_engine
+from src.database.client import get_db_engine
 
 @tool
 def get_srag_metrics(start_date: str, end_date: str) -> Dict[str, Any]:

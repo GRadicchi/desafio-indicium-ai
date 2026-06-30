@@ -69,5 +69,5 @@ def run_etl_pipeline(csv_path: str):
     print("ETL concluído com sucesso!")
 
 if __name__ == "__main__":
-    # Assumindo que o ficheiro descarregado está na pasta data/raw/
-    run_etl_pipeline("data/raw/sivep_gripe.csv")
+    # Apontando para o arquivo real na raiz do projeto
+    run_etl_pipeline("INFLUD26-29-06-2026.csv")

@@ -8,7 +8,7 @@ from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 # Importando a conexão com o banco
-from database.client import get_db_engine
+from src.database.client import get_db_engine
 
 @tool
 def generate_srag_charts(reference_date: str) -> Dict[str, str]:

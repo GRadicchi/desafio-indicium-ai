@@ -1,16 +1,17 @@
 import os
 from langgraph.graph import StateGraph, END
 from langgraph.prebuilt import ToolNode
-from langchain_openai import ChatOpenAI
+from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_core.messages import SystemMessage
 
 # Importando nossos componentes
-from agent.state import AgentState
-from tools import get_srag_metrics, generate_srag_charts, get_srag_news
-from utils.config import load_config # Ajuste conforme necessário
+from src.agent.state import AgentState
+from src.tools import get_srag_metrics, generate_srag_charts, get_srag_news
 
 # 1. Configurar o LLM e as Ferramentas
-llm = ChatOpenAI(model="gpt-4o", temperature=0) # gpt-4o é recomendado para tarefas de agentes
+# Mude a linha do llm para esta versão mais robusta:
+# Use exatamente este nome, sem o prefixo 'models/'
+llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0) # gpt-4o é recomendado para tarefas de agentes
 tools = [get_srag_metrics, generate_srag_charts, get_srag_news]
 llm_with_tools = llm.bind_tools(tools)
 

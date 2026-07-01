@@ -13,8 +13,15 @@ load_dotenv()
 app = FastAPI(title="SRAG Agent API")
 
 class QueryRequest(BaseModel):
-    query: str = """Você é um analista especialista. Gere um relatório estruturado de SRAG. 
-    Use a ferramenta de métricas, a ferramenta `generate_srag_charts` (não invente URLs!) e busque notícias."""
+    query: str = """Você é um analista de dados especialista em saúde pública. 
+                    Gere um relatório executivo estruturado em Markdown sobre o cenário da SRAG no Brasil.
+
+                    OBRIGAÇÕES DO RELATÓRIO:
+                    1. MÉTRICAS: Acione a ferramenta de métricas no banco de dados e extraia explicitamente: Taxa de aumento de casos, Taxa de mortalidade, Taxa de ocupação de UTI e Taxa de vacinação.
+                    2. GRÁFICOS: Você DEVE acionar a ferramenta `generate_srag_charts`. É ESTRITAMENTE PROIBIDO inventar URLs ou usar imagens da internet. Use apenas o caminho local do arquivo que a ferramenta te retornar (ex: ![Gráfico](caminho_local.png)).
+                    3. NOTÍCIAS: Busque notícias recentes.
+
+                    Cruze as informações e apresente os resultados de forma clara e direta."""
 
 @app.post("/api/v1/report")
 async def generate_report(request: QueryRequest):

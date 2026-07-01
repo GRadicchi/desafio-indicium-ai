@@ -1,4 +1,5 @@
 import os
+import time
 from dotenv import load_dotenv
 from langchain_core.messages import HumanMessage
 
@@ -41,6 +42,7 @@ def main():
     for output in app.stream(inputs, stream_mode="updates"):
         for node_name, state_update in output.items():
             print(f">>> [Auditoria] Nó executado: '{node_name}'")
+            time.sleep(5)
             
             ultima_mensagem = state_update["messages"][-1]
             

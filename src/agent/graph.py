@@ -11,7 +11,11 @@ from src.tools import get_srag_metrics, generate_srag_charts, get_srag_news
 # 1. Configurar o LLM e as Ferramentas
 # Mude a linha do llm para esta versão mais robusta:
 # Use exatamente este nome, sem o prefixo 'models/'
-llm = ChatGoogleGenerativeAI(model="gemini-2.0-flash", temperature=0) # gpt-4o é recomendado para tarefas de agentes
+# No arquivo src/agent/graph.py
+llm = ChatGoogleGenerativeAI(
+    model="gemini-flash-latest", 
+    temperature=0
+) # gpt-4o é recomendado para tarefas de agentes
 tools = [get_srag_metrics, generate_srag_charts, get_srag_news]
 llm_with_tools = llm.bind_tools(tools)
 

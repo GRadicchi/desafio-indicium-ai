@@ -1,4 +1,4 @@
-# desafio-indicium-ai
+# Desafio Indicium - Agente de Análise de SRAG
 
 Desafio técnico da Indicium AI para desenvolvimento de uma solução de IA Generativa para análise de dados epidemiológicos.
 
@@ -30,18 +30,17 @@ O sistema foi desenhado com foco em modularidade, governança e transparência, 
    GOOGLE_API_KEY="AIza..."
    TAVILY_API_KEY="tvly-..."
 
-
 ## Instalação de dependências:
-
+Bash
 pip install -r requirements.txt
+Rodar o ETL (Importação dos dados):
 
-    ### Rodar o ETL (Importação dos dados):
+Bash
+python src/utils/etl.py
+Rodar a API:
 
-        python src/utils/etl.py
-
-    ### Rodar a API:
-
-        uvicorn api:app --reload
+Bash
+uvicorn api:app --reload
 
 ## 📋 Governança e Transparência
-O agente utiliza o padrão de state do LangGraph, garantindo que todo o histórico de interações seja mantido e auditável (logado via main.py). O sistema foi configurado para tratar dados sensíveis (PII) durante a etapa de ETL, garantindo conformidade com práticas de privacidade.
+O agente utiliza o padrão de state do LangGraph, garantindo que todo o histórico de interações seja mantido e auditável (logado via main.py). O sistema foi configurado para tratar dados sensíveis (PII) durante a etapa de ETL, garantindo conformidade com práticas de privacidade e Lei Geral de Proteção de Dados (LGPD).

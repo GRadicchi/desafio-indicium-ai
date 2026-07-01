@@ -1,53 +1,40 @@
 import os
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 from langchain_core.messages import HumanMessage
 from dotenv import load_dotenv
-
-# Importa o nosso orquestrador LangGraph
+from datetime import date
 from src.agent.graph import app as agent_app
+from src.tools.chart_tool import generate_srag_charts
 
-# Carrega as variáveis de ambiente (Chaves de API, Database URL)
 load_dotenv()
 
-# Inicializa a aplicação FastAPI
-app = FastAPI(
-    title="SRAG Agent API",
-    description="API do Agente de IA para análise epidemiológica de Síndrome Respiratória Aguda Grave.",
-    version="1.0.0"
-)
+app = FastAPI(title="SRAG Agent API")
 
-# Define o formato do corpo da requisição (Payload)
 class QueryRequest(BaseModel):
-    query: str = """Você é um analista de dados especialista em saúde pública. 
-Gere um relatório executivo estruturado em Markdown sobre o cenário da SRAG no Brasil.
+    query: str = """Você é um analista especialista. Gere um relatório estruturado de SRAG. 
+    Use a ferramenta de métricas, a ferramenta `generate_srag_charts` (não invente URLs!) e busque notícias."""
 
-OBRIGAÇÕES DO RELATÓRIO:
-1. MÉTRICAS: Acione a ferramenta de métricas no banco de dados e extraia explicitamente: Taxa de aumento de casos, Taxa de mortalidade, Taxa de ocupação de UTI e Taxa de vacinação.
-2. GRÁFICOS: Você DEVE acionar a ferramenta `generate_srag_charts`. É ESTRITAMENTE PROIBIDO inventar URLs ou usar imagens da internet. Use apenas o caminho local do arquivo que a ferramenta te retornar (ex: ![Gráfico](caminho_local.png)).
-3. NOTÍCIAS: Busque notícias recentes.
-
-Cruze as informações e apresente os resultados de forma clara e direta."""
-
-# Cria a rota POST que vai acionar o agente
 @app.post("/api/v1/report")
 async def generate_report(request: QueryRequest):
     try:
-        # Prepara o estado inicial (a mensagem do usuário)
         inputs = {"messages": [HumanMessage(content=request.query)]}
-        
-        # O método invoke roda o grafo inteiro até o fim e retorna o estado final
-        # Ao contrário do stream(), ele não imprime passo a passo, apenas aguarda o resultado.
         final_state = agent_app.invoke(inputs)
-        
-        # Extrai o conteúdo da última mensagem (a resposta do LLM)
-        relatorio = final_state["messages"][-1].content
-        
-        return {
-            "status": "success",
-            "relatorio": relatorio
-        }
-        
+        return {"status": "success", "relatorio": final_state["messages"][-1].content}
     except Exception as e:
-        # Se ocorrer o erro 429 de Quota ou de Timeout, a API devolve um erro claro
         raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/api/v1/charts/generate")
+async def trigger_chart_generation():
+    resultado = generate_srag_charts.invoke({"reference_date": date.today().isoformat()})
+    if isinstance(resultado, dict) and "error" in resultado:
+        raise HTTPException(status_code=500, detail=resultado["error"])
+    return {"status": "success", "arquivos": resultado}
+
+@app.get("/api/v1/charts/{chart_name}")
+async def get_chart(chart_name: str):
+    file_path = f"reports/images/{chart_name}.png"
+    if os.path.exists(file_path):
+        return FileResponse(file_path)
+    raise HTTPException(status_code=404, detail="Gráfico não encontrado")

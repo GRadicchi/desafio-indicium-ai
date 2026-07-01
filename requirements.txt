@@ -1,26 +1,12 @@
-# ==========================================
-# Orquestração e Agentes (LangChain/LangGraph)
-# ==========================================
 langchain>=0.1.0
 langchain-openai>=0.0.2
 langchain-community>=0.0.10
 langgraph>=0.0.10
-
-# ==========================================
-# Banco de Dados
-# ==========================================
+langchain-tavily>=0.0.1
 sqlalchemy>=2.0.0
 psycopg2-binary>=2.9.9
-
-# ==========================================
-# Processamento de Dados e Gráficos
-# ==========================================
 pandas>=2.0.0
 matplotlib>=3.7.0
 python-dateutil>=2.8.2
-
-# ==========================================
-# Utilidades
-# ==========================================
 python-dotenv>=1.0.0
 tavily-python>=0.3.3

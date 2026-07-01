@@ -1,9 +1,8 @@
-from langchain_community.tools.tavily_search import TavilySearchResults
+from langchain_tavily import TavilySearch
 from langchain_core.tools import tool
 
-# Instanciamos a ferramenta da Tavily para retornar os 3 melhores resultados
-# O LangChain já se encarrega de ler a TAVILY_API_KEY do seu .env
-tavily_search = TavilySearchResults(max_results=3)
+# Atualizado para a nova implementação recomendada
+tavily_search = TavilySearch(max_results=3)
 
 @tool
 def get_srag_news(query: str) -> str:
@@ -12,24 +11,24 @@ def get_srag_news(query: str) -> str:
     ou vírus respiratórios (COVID, Influenza, VSR).
     
     Args:
-        query (str): O termo de pesquisa (ex: "cenário atual aumento SRAG Brasil", "notícias surto VSR").
+        query (str): O termo de pesquisa (ex: "cenário atual aumento SRAG Brasil").
         
     Returns:
-        str: Um resumo das notícias encontradas com as respetivas fontes e URLs.
+        str: Um resumo das notícias encontradas com as respetivas fontes.
     """
     try:
-        # Executa a pesquisa
-        results = tavily_search.invoke({"query": query})
+        # A nova versão do TavilySearch funciona de forma similar
+        results = tavily_search.invoke(query)
         
         if not results:
             return "Não foram encontradas notícias recentes para esta pesquisa."
             
-        # Formata os resultados num texto limpo para o LLM processar
         formatted_news = "Notícias recentes encontradas:\n\n"
         for i, res in enumerate(results, 1):
-            conteudo = res.get('content', 'Sem conteúdo')
-            url = res.get('url', 'URL Desconhecido')
-            formatted_news += f"{i}. {conteudo}\n(Fonte: {url})\n\n"
+            # Nota: O formato de saída pode variar ligeiramente entre versões, 
+            # adaptamos para garantir robustez
+            conteudo = res.get('content', 'Sem conteúdo') if isinstance(res, dict) else str(res)
+            formatted_news += f"{i}. {conteudo}\n\n"
             
         return formatted_news
         
